@@ -1,107 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>1440TIME™ Token Dashboard</title>
   <style>
     body {
       background-color: #111;
       color: #0ff;
-      font-family: 'Courier New', Courier, monospace;
+      font-family: monospace;
       padding: 20px;
     }
     h1 {
       color: gold;
     }
-    label, input, textarea {
-      display: block;
-      margin: 10px 0;
-      font-size: 1rem;
-    }
     input, textarea {
+      display: block;
+      margin-bottom: 10px;
       padding: 5px;
       width: 300px;
     }
     button {
-      margin-top: 20px;
       padding: 10px 20px;
-      background: #0ff;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
+      font-size: 16px;
     }
-    .output {
-      margin-top: 30px;
-      background: #000;
-      padding: 20px;
-      border: 1px solid #0ff;
+    .section {
+      margin-bottom: 30px;
     }
   </style>
 </head>
 <body>
-  <h1>⏳ 1440TIME™ Token Dashboard</h1>
-  <p>🎟️ Enter your ticket into the great game of life:</p>
+  <h1>⌛ 1440TIME™ Token Dashboard</h1>
+  <div class="section">
+    <p>💼 Enter your ticket into the great game of life:</p>
+    <label>🌏 Annual Salary:</label>
+    <input id="salary" type="number" value="0">
 
-  <label for="wage">💵 Hourly Wage:</label>
-  <input type="number" id="wage" value="0" />
+    <label>🫂 Sleep Hours:</label>
+    <input id="sleep" type="number" value="0">
 
-  <label for="sleep">😴 Sleep Hours:</label>
-  <input type="number" id="sleep" value="0" />
+    <label>💼 Work Hours:</label>
+    <input id="work" type="number" value="0">
 
-  <label for="work">💼 Work Hours:</label>
-  <input type="number" id="work" value="0" />
+    <label>🛁 Vault Activities (PTP):</label>
+    <textarea id="vault"></textarea>
 
-  <label for="vault">🔒 Vault Activities (PTP):</label>
-  <textarea id="vault" rows="2"></textarea>
+    <label>🧠 AI Tools Used:</label>
+    <textarea id="ai"></textarea>
 
-  <label for="ai">🧠 AI Tools Used:</label>
-  <textarea id="ai" rows="2"></textarea>
+    <label>⚒ Maintenance Tasks:</label>
+    <textarea id="maint"></textarea>
 
-  <label for="maint">🛠️ Maintenance Tasks:</label>
-  <textarea id="maint" rows="2"></textarea>
+    <label>🧥 Leisure Activities:</label>
+    <textarea id="leis"></textarea>
 
-  <label for="leisure">🎮 Leisure Activities:</label>
-  <textarea id="leisure" rows="2"></textarea>
+    <button onclick="calculateTokens()">⏳ Calculate My Day</button>
+  </div>
 
-  <button onclick="calculateTokens()">🧮 Calculate My Day</button>
-
-  <div class="output" id="output"></div>
+  <pre id="output"></pre>
 
   <script>
     function calculateTokens() {
+      const salary = Number(document.getElementById('salary').value);
+      const sleep = Number(document.getElementById('sleep').value);
+      const work = Number(document.getElementById('work').value);
+      const vault = document.getElementById('vault').value.split("\n").filter(Boolean).length;
+      const ai = document.getElementById('ai').value.split("\n").filter(Boolean).length;
+      const maint = document.getElementById('maint').value.split("\n").filter(Boolean).length;
+      const leis = document.getElementById('leis').value.split("\n").filter(Boolean).length;
+
       const dailyTokens = 1440;
-      const wage = parseFloat(document.getElementById('wage').value);
-      const sleep = parseFloat(document.getElementById('sleep').value);
-      const work = parseFloat(document.getElementById('work').value);
-      const vault = document.getElementById('vault').value.split(',').filter(x => x.trim() !== '').length;
-      const ai = document.getElementById('ai').value.split(',').filter(x => x.trim() !== '').length;
-      const maint = document.getElementById('maint').value.split(',').filter(x => x.trim() !== '').length;
-      const leisure = document.getElementById('leisure').value.split(',').filter(x => x.trim() !== '').length;
-
       const sleepTokens = sleep * 60;
-      const workTokens = work * 60;
-      const onTime = dailyTokens - sleepTokens - workTokens;
-      const valuePerMinute = (wage / 60).toFixed(2);
+      const livelihoodTokens = work * 60;
+      const onTime = dailyTokens - sleepTokens - livelihoodTokens;
+      const hourlyWage = salary / (work * 260); // 260 = avg workdays per year
+      const valuePerMinute = (hourlyWage / 60).toFixed(2);
 
-      const vaultTokens = vault * 3;
-      const aiTokens = ai * 10;
-      const maintTokens = maint;
-      const leisureTokens = leisure * -1;
+      const vaultPTP = vault * 3;
+      const aiBoost = ai * 10;
+      const maintenance = maint;
+      const leisure = leis * -1;
 
-      const used = vaultTokens + aiTokens + maintTokens + leisureTokens;
-      const remaining = onTime - used;
+      const totalUsed = vaultPTP + aiBoost + maintenance + leisure;
+      const remaining = onTime - totalUsed;
 
-      document.getElementById('output').innerHTML = `
-        <p>💤 Sleep Zone: ${sleepTokens} tokens</p>
-        <p>💼 Livelihood Zone: ${workTokens} tokens at $${valuePerMinute}/min</p>
-        <p>🚀 On-Time Zone: ${onTime} tokens</p>
-        <p>🔒 Vault (PTP): ${vaultTokens} tokens</p>
-        <p>🧠 AI Boost: ${aiTokens} tokens</p>
-        <p>🛠️ Maintenance: ${maintTokens} tokens</p>
-        <p>🎮 Leisure: ${leisureTokens} tokens</p>
-        <p>💡 Remaining Tokens Today: ${remaining} (Spend them wisely!)</p>
-      `;
+      document.getElementById('output').textContent =
+`📂 Welcome to 1440TIME™
+
+🔵 Sleep Zone: ${sleepTokens} tokens
+💼 Livelihood Zone: ${livelihoodTokens} tokens at \$${valuePerMinute}/min
+
+🎉 On-Time Zone: ${onTime} tokens
+🛁 Vault (PTP): ${vaultPTP} tokens
+🧠 1440X Boost (AI-enhanced): ${aiBoost} tokens
+⚒ Maintenance: ${maintenance} tokens
+🧥 Leisure: ${leisure} tokens
+
+💡 Remaining Tokens Today: ${remaining} (Spend them wisely!)`
     }
   </script>
 </body>
