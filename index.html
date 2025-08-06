@@ -1,30 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>1440TIME™ Token Dashboard</title>
   <style>
     body {
-      font-family: 'Courier New', Courier, monospace;
-      background: #121212;
-      color: #00ffcc;
-      padding: 20px;
+      background: #111;
+      color: #0ff;
+      font-family: monospace;
+      padding: 2rem;
     }
     h1 {
-      color: #ffcc00;
+      color: #ff0;
     }
     pre {
-      white-space: pre-wrap;
+      font-size: 1.1rem;
     }
   </style>
 </head>
 <body>
-  <h1>🧠 1440TIME™ Token Dashboard</h1>
-  <pre id="dashboard"></pre>
+  <h1>⏳ 1440TIME™ Token Dashboard</h1>
+  <pre id="dashboard">Loading...</pre>
 
   <script>
-    // --- 1440TIME™ App Blueprint ---
     const user = {
       dailyTokens: 1440,
       sleepHours: 7,
@@ -33,9 +31,9 @@
       yearlyWeeks: 50,
       hourlyWage: 35,
       aiToolsEnabled: true,
-      vaultActivities: [1, 1, 1], // sample vault
+      vaultActivities: [1, 1, 1],
       maintenanceTasks: [1, 1],
-      leisure: [1, 1, 1, 1],
+      leisure: [1, 1, 1, 1]
     };
 
     function calculateZones(user) {
@@ -43,12 +41,11 @@
       const livelihoodTokens = user.workHours * 60;
       const onTimeTokens = user.dailyTokens - sleepTokens - livelihoodTokens;
       const valuePerWorkMinute = (user.hourlyWage / 60).toFixed(2);
-
       return {
         sleep: sleepTokens,
         livelihood: livelihoodTokens,
         onTime: onTimeTokens,
-        valuePerMinute: `$${valuePerWorkMinute}`,
+        valuePerMinute: `$${valuePerWorkMinute}`
       };
     }
 
@@ -57,24 +54,13 @@
       const aiBoost = user.aiToolsEnabled ? vault * 10 : 0;
       const maintenance = user.maintenanceTasks.length;
       const leisure = user.leisure.length * -1;
-
-      return {
-        vaultPTP: vault,
-        aiBoost,
-        maintenance,
-        leisure,
-      };
+      return { vaultPTP: vault, aiBoost, maintenance, leisure };
     }
 
     function dashboard(user) {
       const zones = calculateZones(user);
       const tokenCategories = categorizeOnTimeTokens(user);
-      const totalUtilized =
-        tokenCategories.vaultPTP +
-        tokenCategories.aiBoost +
-        tokenCategories.maintenance +
-        tokenCategories.leisure;
-
+      const totalUtilized = tokenCategories.vaultPTP + tokenCategories.aiBoost + tokenCategories.maintenance + tokenCategories.leisure;
       const remaining = zones.onTime - totalUtilized;
 
       const output = `
@@ -96,7 +82,6 @@
       document.getElementById('dashboard').textContent = output;
     }
 
-    // Launch it!
     dashboard(user);
   </script>
 </body>
