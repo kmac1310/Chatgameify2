@@ -1,78 +1,103 @@
-// 1440TIME™ App Blueprint
-// Created for Kevin R. McGrane, the Time Wizard
-// This app turns minutes into tokens and helps users own every day.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1440TIME™ Token Dashboard</title>
+  <style>
+    body {
+      font-family: 'Courier New', Courier, monospace;
+      background: #121212;
+      color: #00ffcc;
+      padding: 20px;
+    }
+    h1 {
+      color: #ffcc00;
+    }
+    pre {
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧠 1440TIME™ Token Dashboard</h1>
+  <pre id="dashboard"></pre>
 
-const user = {
-  dailyTokens: 1440,
-  sleepHours: 7,
-  workHours: 8,
-  weeklyWorkDays: 5,
-  yearlyWeeks: 50,
-  hourlyWage: 35, // example wage
+  <script>
+    // --- 1440TIME™ App Blueprint ---
+    const user = {
+      dailyTokens: 1440,
+      sleepHours: 7,
+      workHours: 8,
+      weeklyWorkDays: 5,
+      yearlyWeeks: 50,
+      hourlyWage: 35,
+      aiToolsEnabled: true,
+      vaultActivities: [1, 1, 1], // sample vault
+      maintenanceTasks: [1, 1],
+      leisure: [1, 1, 1, 1],
+    };
 
-  // Settings will be customizable by user input
-  aiToolsEnabled: true,
-  vaultActivities: [],
-  maintenanceTasks: [],
-  leisure: [],
-};
+    function calculateZones(user) {
+      const sleepTokens = user.sleepHours * 60;
+      const livelihoodTokens = user.workHours * 60;
+      const onTimeTokens = user.dailyTokens - sleepTokens - livelihoodTokens;
+      const valuePerWorkMinute = (user.hourlyWage / 60).toFixed(2);
 
-function calculateZones(user) {
-  const sleepTokens = user.sleepHours * 60;
-  const livelihoodTokens = user.workHours * 60;
-  const onTimeTokens = user.dailyTokens - sleepTokens - livelihoodTokens;
-  const valuePerWorkMinute = (user.hourlyWage / 60).toFixed(2);
+      return {
+        sleep: sleepTokens,
+        livelihood: livelihoodTokens,
+        onTime: onTimeTokens,
+        valuePerMinute: `$${valuePerWorkMinute}`,
+      };
+    }
 
-  return {
-    sleep: sleepTokens,
-    livelihood: livelihoodTokens,
-    onTime: onTimeTokens,
-    valuePerMinute: `$${valuePerWorkMinute}`,
-  };
-}
+    function categorizeOnTimeTokens(user) {
+      const vault = user.vaultActivities.length * 3;
+      const aiBoost = user.aiToolsEnabled ? vault * 10 : 0;
+      const maintenance = user.maintenanceTasks.length;
+      const leisure = user.leisure.length * -1;
 
-function categorizeOnTimeTokens(user) {
-  const vault = user.vaultActivities.length * 3; // 3x value for PTP
-  const aiBoost = user.aiToolsEnabled ? vault * 10 : 0; // 1440X boost
-  const maintenance = user.maintenanceTasks.length; // no multiplier
-  const leisure = user.leisure.length * -1; // passive or low value
+      return {
+        vaultPTP: vault,
+        aiBoost,
+        maintenance,
+        leisure,
+      };
+    }
 
-  return {
-    vaultPTP: vault,
-    aiBoost: aiBoost,
-    maintenance,
-    leisure,
-  };
-}
+    function dashboard(user) {
+      const zones = calculateZones(user);
+      const tokenCategories = categorizeOnTimeTokens(user);
+      const totalUtilized =
+        tokenCategories.vaultPTP +
+        tokenCategories.aiBoost +
+        tokenCategories.maintenance +
+        tokenCategories.leisure;
 
-// UI Component - Simulated (to be implemented visually in HTML/CSS/JS frontend)
-function dashboard(user) {
-  const zones = calculateZones(user);
-  const tokenCategories = categorizeOnTimeTokens(user);
+      const remaining = zones.onTime - totalUtilized;
 
-  console.log("🔮 Welcome to 1440TIME™\n");
-  console.log(`🛏️  Sleep Zone: ${zones.sleep} tokens`);
-  console.log(`💼 Livelihood Zone: ${zones.livelihood} tokens at ${zones.valuePerMinute}/min`);
-  console.log(`🚀 On-Time Zone: ${zones.onTime} tokens\n`);
+      const output = `
+👋 Welcome to 1440TIME™
 
-  console.log("📊 On-Time Breakdown:");
-  console.log(`🔐 Vault/Goals (PTP): ${tokenCategories.vaultPTP} tokens`);
-  console.log(`🤖 1440X Boost (AI-enhanced): ${tokenCategories.aiBoost} tokens`);
-  console.log(`🧰 Maintenance: ${tokenCategories.maintenance} tokens`);
-  console.log(`📺 Leisure: ${tokenCategories.leisure} tokens`);
+📘 Sleep Zone: ${zones.sleep} tokens
+💼 Livelihood Zone: ${zones.livelihood} tokens at ${zones.valuePerMinute}/min
 
-  const totalUtilized = tokenCategories.vaultPTP + tokenCategories.aiBoost + tokenCategories.maintenance + tokenCategories.leisure;
-  const remaining = zones.onTime - totalUtilized;
+🚀 On-Time Zone: ${zones.onTime} tokens
 
-  console.log(`\n💡 Remaining Tokens Today: ${remaining} (Spend them wisely!)`);
-}
+🔐 Vault/Goals (PTP): ${tokenCategories.vaultPTP} tokens
+🧠 1440X Boost (AI-enhanced): ${tokenCategories.aiBoost} tokens
+🧰 Maintenance: ${tokenCategories.maintenance} tokens
+📖 Leisure: ${tokenCategories.leisure} tokens
 
-// Simulate app execution
-dashboard(user);
+💡 Remaining Tokens Today: ${remaining} (Spend them wisely!)
+      `;
 
-// Future extensions:
-// - Web form input to collect user settings
-// - Token Tracker for daily, weekly, lifetime progress
-// - Notifications & prompts for unused tokens
-// - Leaderboard for most efficient days (PTP streaks)
-// - Integration with ChatGPT & calendar APIs
+      document.getElementById('dashboard').textContent = output;
+    }
+
+    // Launch it!
+    dashboard(user);
+  </script>
+</body>
+</html>
