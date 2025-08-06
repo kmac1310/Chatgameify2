@@ -1,0 +1,78 @@
+// 1440TIME™ App Blueprint
+// Created for Kevin R. McGrane, the Time Wizard
+// This app turns minutes into tokens and helps users own every day.
+
+const user = {
+  dailyTokens: 1440,
+  sleepHours: 7,
+  workHours: 8,
+  weeklyWorkDays: 5,
+  yearlyWeeks: 50,
+  hourlyWage: 35, // example wage
+
+  // Settings will be customizable by user input
+  aiToolsEnabled: true,
+  vaultActivities: [],
+  maintenanceTasks: [],
+  leisure: [],
+};
+
+function calculateZones(user) {
+  const sleepTokens = user.sleepHours * 60;
+  const livelihoodTokens = user.workHours * 60;
+  const onTimeTokens = user.dailyTokens - sleepTokens - livelihoodTokens;
+  const valuePerWorkMinute = (user.hourlyWage / 60).toFixed(2);
+
+  return {
+    sleep: sleepTokens,
+    livelihood: livelihoodTokens,
+    onTime: onTimeTokens,
+    valuePerMinute: `$${valuePerWorkMinute}`,
+  };
+}
+
+function categorizeOnTimeTokens(user) {
+  const vault = user.vaultActivities.length * 3; // 3x value for PTP
+  const aiBoost = user.aiToolsEnabled ? vault * 10 : 0; // 1440X boost
+  const maintenance = user.maintenanceTasks.length; // no multiplier
+  const leisure = user.leisure.length * -1; // passive or low value
+
+  return {
+    vaultPTP: vault,
+    aiBoost: aiBoost,
+    maintenance,
+    leisure,
+  };
+}
+
+// UI Component - Simulated (to be implemented visually in HTML/CSS/JS frontend)
+function dashboard(user) {
+  const zones = calculateZones(user);
+  const tokenCategories = categorizeOnTimeTokens(user);
+
+  console.log("🔮 Welcome to 1440TIME™\n");
+  console.log(`🛏️  Sleep Zone: ${zones.sleep} tokens`);
+  console.log(`💼 Livelihood Zone: ${zones.livelihood} tokens at ${zones.valuePerMinute}/min`);
+  console.log(`🚀 On-Time Zone: ${zones.onTime} tokens\n`);
+
+  console.log("📊 On-Time Breakdown:");
+  console.log(`🔐 Vault/Goals (PTP): ${tokenCategories.vaultPTP} tokens`);
+  console.log(`🤖 1440X Boost (AI-enhanced): ${tokenCategories.aiBoost} tokens`);
+  console.log(`🧰 Maintenance: ${tokenCategories.maintenance} tokens`);
+  console.log(`📺 Leisure: ${tokenCategories.leisure} tokens`);
+
+  const totalUtilized = tokenCategories.vaultPTP + tokenCategories.aiBoost + tokenCategories.maintenance + tokenCategories.leisure;
+  const remaining = zones.onTime - totalUtilized;
+
+  console.log(`\n💡 Remaining Tokens Today: ${remaining} (Spend them wisely!)`);
+}
+
+// Simulate app execution
+dashboard(user);
+
+// Future extensions:
+// - Web form input to collect user settings
+// - Token Tracker for daily, weekly, lifetime progress
+// - Notifications & prompts for unused tokens
+// - Leaderboard for most efficient days (PTP streaks)
+// - Integration with ChatGPT & calendar APIs
