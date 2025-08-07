@@ -1,91 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>⏳ 1440TIME™ Token Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1440TIME™ Token Calculator</title>
   <style>
     body {
       background-color: #111;
       color: #0ff;
       font-family: monospace;
-      padding: 2em;
+      padding: 20px;
     }
-    h1 {
-      color: gold;
-    }
-    label, input, textarea, button {
+    label {
       display: block;
-      margin: 0.5em 0;
+      margin: 10px 0 5px;
+    }
+    input {
       width: 100%;
-      font-size: 1.1em;
+      padding: 5px;
+      font-size: 16px;
+      margin-bottom: 10px;
     }
     button {
-      background-color: #eee;
-      color: #111;
-      padding: 0.6em;
-      font-weight: bold;
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 10px;
+      background-color: #ff0;
+      color: #000;
       border: none;
       cursor: pointer;
     }
-    button:hover {
-      background-color: #ccc;
-    }
-    .section {
-      margin-bottom: 2em;
-    }
-    .token-result {
+    .result {
+      margin-top: 20px;
       color: #0f0;
-      font-weight: bold;
-      margin-top: 1em;
+      font-size: 18px;
     }
   </style>
 </head>
 <body>
-  <h1>⏳ 1440TIME™ Token Dashboard</h1>
+  <h1>⏳ 1440TIME™ Token Calculator</h1>
 
-  <div class="section">
-    <label for="salary">🏛️ Annual Salary:</label>
-    <input type="number" id="salary" placeholder="Enter your yearly income" />
+  <label for="salary">Annual Salary ($):</label>
+  <input type="number" id="salary" placeholder="e.g. 100000">
 
-    <label for="sleep">🫍 Sleep Hours:</label>
-    <input type="number" id="sleep" placeholder="e.g. 7" />
+  <label for="sleep">Sleep Hours/Day:</label>
+  <input type="number" id="sleep" placeholder="e.g. 7">
 
-    <label for="work">💼 Work Hours:</label>
-    <input type="number" id="work" placeholder="e.g. 9" />
+  <label for="work">Work Hours/Day:</label>
+  <input type="number" id="work" placeholder="e.g. 8">
 
-    <label for="daysPerWeek">🗓️ Work Days/Week:</label>
-    <input type="number" id="daysPerWeek" placeholder="e.g. 5" />
+  <label for="days">Work Days/Week:</label>
+  <input type="number" id="days" placeholder="e.g. 5">
 
-    <label for="weeksPerYear">📅 Weeks Worked/Year:</label>
-    <input type="number" id="weeksPerYear" placeholder="e.g. 50" />
+  <label for="weeks">Weeks Worked/Year:</label>
+  <input type="number" id="weeks" placeholder="e.g. 50">
 
-    <button onclick="calculateTokens()">⏳ Calculate My Day</button>
+  <button onclick="calculateTokens()">⏳ Calculate My Day</button>
 
-    <div class="token-result" id="result"></div>
-  </div>
+  <div class="result" id="output"></div>
 
   <script>
     function calculateTokens() {
-      const salary = parseFloat(document.getElementById('salary').value);
-      const sleep = parseFloat(document.getElementById('sleep').value);
-      const work = parseFloat(document.getElementById('work').value);
-      const daysPerWeek = parseFloat(document.getElementById('daysPerWeek').value);
-      const weeksPerYear = parseFloat(document.getElementById('weeksPerYear').value);
+      const salary = Number(document.getElementById("salary").value);
+      const sleep = Number(document.getElementById("sleep").value);
+      const work = Number(document.getElementById("work").value);
+      const days = Number(document.getElementById("days").value);
+      const weeks = Number(document.getElementById("weeks").value);
 
-      const totalMinutes = 1440;
       const sleepTokens = sleep * 60;
       const workTokens = work * 60;
-      const onTimeTokens = totalMinutes - sleepTokens - workTokens;
-      const hourlyWage = salary / (weeksPerYear * daysPerWeek * work);
-      const perMinuteWage = hourlyWage / 60;
-      const livelihoodValue = workTokens * perMinuteWage;
+      const hourlyRate = salary / (weeks * days * work);
+      const perMinuteRate = hourlyRate / 60;
+      const workValue = workTokens * perMinuteRate;
 
-      document.getElementById('result').innerHTML = `
-        🔢 Sleep Tokens: ${sleepTokens}<br>
-        💼 Livelihood Tokens: ${workTokens} (@ $${perMinuteWage.toFixed(2)}/min = $${livelihoodValue.toFixed(2)})<br>
-        ✨ On-Time Tokens: ${onTimeTokens}<br>
-        📊 Total Tokens Today: ${totalMinutes} (24 hrs = 1,440 minutes)
+      const onTimeTokens = 1440 - sleepTokens - workTokens;
+
+      document.getElementById("output").innerHTML = `
+        ⏰ <strong>Sleep Tokens:</strong> ${sleepTokens}<br>
+        💼 <strong>Work Tokens:</strong> ${workTokens} tokens @ $${perMinuteRate.toFixed(2)}/min = <strong>$${workValue.toFixed(2)}</strong><br>
+        🔥 <strong>On-Time Tokens:</strong> ${onTimeTokens} tokens
       `;
     }
   </script>
