@@ -3,45 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>1440TIME™ Token Calculator</title>
+  <title>1440TIME™ Vault Token Planner</title>
   <style>
     body {
       background-color: #111;
-      color: #0ff;
-      font-family: monospace;
+      color: #eee;
+      font-family: 'Segoe UI', sans-serif;
       padding: 20px;
+    }
+    h1 {
+      color: #00ffff;
     }
     label {
       display: block;
-      margin: 10px 0 5px;
+      margin: 12px 0 4px;
     }
-    input {
+    input[type="number"] {
       width: 100%;
-      padding: 5px;
-      font-size: 16px;
-      margin-bottom: 10px;
+      padding: 10px;
+      font-size: 1em;
+    }
+    .section-title {
+      margin-top: 30px;
+      color: #ffd700;
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+    #summary {
+      margin-top: 30px;
+      font-size: 1.1em;
+      line-height: 1.6;
     }
     button {
       padding: 10px 20px;
-      font-size: 16px;
-      margin-top: 10px;
-      background-color: #ff0;
+      background: #ffd700;
       color: #000;
       border: none;
+      font-weight: bold;
       cursor: pointer;
-    }
-    .result {
       margin-top: 20px;
-      color: #0f0;
-      font-size: 18px;
+    }
+    .highlight {
+      color: #00ff00;
     }
   </style>
 </head>
 <body>
-  <h1>⏳ 1440TIME™ Token Calculator</h1>
+  <h1>⏳ 1440TIME™ Vault Token Planner</h1>
 
-  <label for="salary">Annual Salary ($):</label>
-  <input type="number" id="salary" placeholder="e.g. 100000">
+  <p>Start fresh. Enter your custom daily inputs:</p>
 
   <label for="sleep">Sleep Hours/Day:</label>
   <input type="number" id="sleep" placeholder="e.g. 7">
@@ -49,37 +59,66 @@
   <label for="work">Work Hours/Day:</label>
   <input type="number" id="work" placeholder="e.g. 8">
 
-  <label for="days">Work Days/Week:</label>
-  <input type="number" id="days" placeholder="e.g. 5">
+  <div class="section-title">🌟 How will you spend your On-Time Tokens (remaining after sleep + work)?
+  </div>
 
-  <label for="weeks">Weeks Worked/Year:</label>
-  <input type="number" id="weeks" placeholder="e.g. 50">
+  <label for="goal">🎯 Goal Work:</label>
+  <input type="number" id="goal" placeholder="e.g. 120">
 
-  <button onclick="calculateTokens()">⏳ Calculate My Day</button>
+  <label for="learning">📚 Learning / AI Training:</label>
+  <input type="number" id="learning" placeholder="e.g. 60">
 
-  <div class="result" id="output"></div>
+  <label for="wellness">🧘‍♂️ Wellness / Mindfulness:</label>
+  <input type="number" id="wellness" placeholder="e.g. 30">
+
+  <label for="chores">🧹 Maintenance / Chores:</label>
+  <input type="number" id="chores" placeholder="e.g. 45">
+
+  <label for="fun">🎉 Fun / Family / Entertainment:</label>
+  <input type="number" id="fun" placeholder="e.g. 60">
+
+  <button onclick="calculateTokens()">⌛ Calculate My Token Plan</button>
+
+  <div id="summary"></div>
 
   <script>
     function calculateTokens() {
-      const salary = Number(document.getElementById("salary").value);
-      const sleep = Number(document.getElementById("sleep").value);
-      const work = Number(document.getElementById("work").value);
-      const days = Number(document.getElementById("days").value);
-      const weeks = Number(document.getElementById("weeks").value);
+      const sleep = Number(document.getElementById('sleep').value) || 0;
+      const work = Number(document.getElementById('work').value) || 0;
 
       const sleepTokens = sleep * 60;
       const workTokens = work * 60;
-      const hourlyRate = salary / (weeks * days * work);
-      const perMinuteRate = hourlyRate / 60;
-      const workValue = workTokens * perMinuteRate;
+      const remainingTokens = 1440 - sleepTokens - workTokens;
 
-      const onTimeTokens = 1440 - sleepTokens - workTokens;
+      const goal = Number(document.getElementById('goal').value) || 0;
+      const learning = Number(document.getElementById('learning').value) || 0;
+      const wellness = Number(document.getElementById('wellness').value) || 0;
+      const chores = Number(document.getElementById('chores').value) || 0;
+      const fun = Number(document.getElementById('fun').value) || 0;
 
-      document.getElementById("output").innerHTML = `
-        ⏰ <strong>Sleep Tokens:</strong> ${sleepTokens}<br>
-        💼 <strong>Work Tokens:</strong> ${workTokens} tokens @ $${perMinuteRate.toFixed(2)}/min = <strong>$${workValue.toFixed(2)}</strong><br>
-        🔥 <strong>On-Time Tokens:</strong> ${onTimeTokens} tokens
+      const totalOnTimeUsed = goal + learning + wellness + chores + fun;
+
+      let summary = `
+        ⏰ <span class="highlight">Sleep Tokens:</span> ${sleepTokens}<br>
+        💼 <span class="highlight">Work Tokens:</span> ${workTokens}<br>
+        🔥 <span class="highlight">Available On-Time Tokens:</span> ${remainingTokens}<br><br>
+        <strong>Vault Token Allocation:</strong><br>
+        ✅ Goal Work: ${goal}<br>
+        ✨ Learning / AI: ${learning}<br>
+        ☕ Wellness: ${wellness}<br>
+        ⚒️ Chores: ${chores}<br>
+        🎉 Fun: ${fun}<br>
+        <br>
+        ▶ <strong>Total Used:</strong> ${totalOnTimeUsed} / ${remainingTokens}
       `;
+
+      if (totalOnTimeUsed > remainingTokens) {
+        summary += `<br><span style="color:red;">Warning: You're over your available On-Time tokens!</span>`;
+      } else {
+        summary += `<br><span style="color:#00ffcc;">Nice! You're within your On-Time vault budget.</span>`;
+      }
+
+      document.getElementById('summary').innerHTML = summary;
     }
   </script>
 </body>
